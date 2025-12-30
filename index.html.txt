@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>StepDrop Lite</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      background: linear-gradient(to bottom, #6a11cb, #2575fc);
+      color: white;
+      font-family: system-ui;
+      padding: 20px;
+      text-align: center;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .steps { font-size: 40px; margin: 20px 0; }
+    .btn {
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      padding: 16px;
+      margin: 12px 0;
+      border-radius: 12px;
+      font-size: 18px;
+      cursor: pointer;
+      width: 90%;
+    }
+  </style>
+</head>
+<body>
+  <h1>⚡ StepDrop Lite</h1>
+  <div>Твои шаги</div>
+  <div class="steps" id="steps">0</div>
+  
+  <button class="btn" onclick="addSteps()">+1000 шагов (тест)</button>
+  <button class="btn" onclick="showShop()">🎁 Магазин (скоро)</button>
+
+  <script>
+    // Используем Telegram CloudStorage для сохранения (работает даже без сервера!)
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    // Загружаем шаги из Telegram Cloud
+    tg.CloudStorage.getItem("steps", (ok, value) => {
+      if (ok && value) {
+        steps = parseInt(value);
+      }
+      updateUI();
+    });
+
+    let steps = 0;
+
+    function updateUI() {
+      document.getElementById("steps").textContent = steps;
+    }
+
+    function addSteps() {
+      steps += 1000;
+      // Сохраняем в облако Telegram
+      tg.CloudStorage.setItem("steps", steps.toString(), () => {
+        tg.showAlert("✅ +1000 шагов!");
+      });
+      updateUI();
+    }
+
+    function showShop() {
+      tg.showAlert("Скоро: сертификаты Ozon, Steam и кофе! Следи за обновлениями.");
+    }
+  </script>
+</body>
+</html>
